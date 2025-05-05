@@ -1,50 +1,95 @@
-# Welcome to your Expo app 👋
+# Arabic Words
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+[![Project Status: In Development](https://img.shields.io/badge/status-in%20development-yellow)](https://shields.io/)
 
-## Get started
+A mobile application for seamless bidirectional translation between English and Lebanese Arabic (or other Levantine dialects).
 
-1. Install dependencies
+## Table of Contents
 
-   ```bash
-   npm install
-   ```
+1.  [Project Description](#project-description)
+2.  [Tech Stack](#tech-stack)
+3.  [Getting Started Locally](#getting-started-locally)
+4.  [Available Scripts](#available-scripts)
+5.  [Project Scope](#project-scope)
+6.  [Project Status](#project-status)
+7.  [License](#license)
 
-2. Start the app
+## Project Description
 
-   ```bash
-   npx expo start
-   ```
+The **Arabic Words** app aims to bridge the communication gap for expats and residents in Levantine countries, starting with Lebanon, by providing accurate translations between English and the local dialect (Lebanese Arabic). Unlike many existing tools that focus on Standard Arabic, this app uses a pre-verified dictionary specific to the Lebanese dialect and employs caching for fast search results.
 
-In the output, you'll find options to open the app in a
+Future iterations plan to include a paid feature allowing users to download the dictionary for offline access.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+This project is built using the Expo framework and leverages the following technologies:
 
-## Get a fresh project
+- **Core:** React Native (0.79+), React (19.0+), Expo SDK (53+)
+- **Language:** TypeScript (5+)
+- **Navigation:** Expo Router (5+)
+- **Styling:** NativeWind (4+), Tailwind CSS (3+)
+- **Linting:** ESLint (9+), `eslint-config-expo`
 
-When you're ready, run:
+## Getting Started Locally
 
-```bash
-npm run reset-project
-```
+### Prerequisites
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Node.js (LTS version recommended)
+- npm or yarn
+- Expo CLI: `npm install -g expo-cli`
+- Git
+- (Optional but recommended for native development) Android Studio or Xcode setup for device/simulator testing.
 
-## Learn more
+### Installation & Setup
 
-To learn more about developing your project with Expo, look at the following resources:
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd arabicwords
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+3.  **Run the application:**
+    - Start the development server: `npm start` or `yarn start`
+    - Run on Android: `npm run android` or `yarn android`
+    - Run on iOS: `npm run ios` or `yarn ios`
+    - Run in a web browser: `npm run web` or `yarn web`
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Available Scripts
 
-## Join the community
+In the project directory, you can run the following scripts:
 
-Join our community of developers creating universal apps.
+- `npm start`: Runs the app in development mode using Expo Go.
+- `npm run android`: Runs the app on a connected Android device or emulator.
+- `npm run ios`: Runs the app on an iOS simulator or device (macOS only).
+- `npm run web`: Runs the app in a web browser.
+- `npm run lint`: Lints the codebase using ESLint.
+- `npm run reset-project`: Resets the project state (specific functionality defined in `scripts/reset-project.js`).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Project Scope
+
+### Included (MVP)
+
+- Real-time bidirectional word translation (English <-> Lebanese Arabic).
+- Utilizes a pre-verified dictionary for accuracy.
+- Caching mechanism for optimized search performance.
+- Future: Secure payment integration to unlock offline dictionary download.
+- Future: Basic secure user authentication for paid features.
+
+### Excluded (Initially)
+
+- Full offline translation functionality (only dictionary _download_ will be available post-payment).
+- Support for dialects other than Lebanese Arabic.
+- Advanced features like continuous dictionary synchronization or extensive user profiling.
+
+## Project Status
+
+The project is currently **in development**. The initial focus is on delivering the core translation functionality for the Lebanese dialect and implementing the mechanism for the paid offline dictionary download feature.
+
+## License
+
+This project is currently private (`"private": true` in `package.json`). A specific open-source license may be chosen in the future if the project becomes public.

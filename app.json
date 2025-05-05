@@ -37,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "66b82e31-0b5e-42da-9429-9e19289c971d"
+      }
+    },
+    "owner": "kuba-04"
   }
 }
