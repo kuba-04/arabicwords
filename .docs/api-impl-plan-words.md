@@ -95,7 +95,7 @@ The endpoint provides a way to retrieve words from the Arabic dictionary with su
 2. **Develop Service Layer (`wordsService`):**
    - Implement a service module that constructs the SQL query for filtering, sorting, and paginating the words. This service should interact with the database using an ORM or parameterized queries.
 3. **Controller Setup:**
-   - Create the API endpoint handler in the appropriate route file (e.g., in `/src/pages/api/words`).
+   - Create the API endpoint handler in the appropriate route file (e.g., in `/app/pages/api/words`).
    - Parse query parameters, validate using the defined schema, and pass to the service layer.
 4. **Database Query:**
    - Ensure that the query efficiently joins the `Words` table with the `WordForms` table, retrieving only the required fields.
