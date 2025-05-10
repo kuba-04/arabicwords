@@ -10,10 +10,14 @@ declare global {
 }
 
 interface ImportMetaEnv {
-  readonly SUPABASE_URL: string;
-  readonly SUPABASE_KEY: string;
+  readonly EXPO_PUBLIC_SUPABASE_URL: string;
+  readonly EXPO_PUBLIC_SUPABASE_KEY: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+// Add a default export to prevent router from treating this as a route
+const EnvTypes = {};
+export default EnvTypes;

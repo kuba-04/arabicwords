@@ -331,3 +331,6 @@ export const Constants = {
   },
 } as const
 
+// Add a default export to prevent router from treating this as a route
+const DatabaseTypes = {};
+export default DatabaseTypes;

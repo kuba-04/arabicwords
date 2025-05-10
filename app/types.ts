@@ -97,4 +97,22 @@ export type LoginResponseDTO = {
     id: string;
     email: string;
   };
+};
+
+/*
+ * WordsQueryParams:
+ * Query parameters for GET /api/words endpoint
+ */
+export type WordsQueryParams = {
+  english?: string;
+  arabic?: string;
+  part_of_speech?: string;
+  frequency?: Database["public"]["Enums"]["frequency_tag"];
+  page?: number;
+  limit?: number;
+  sort_by?: string;
 }; 
+
+// Add a default export to prevent router from treating this as a route
+const Types = {};
+export default Types;
