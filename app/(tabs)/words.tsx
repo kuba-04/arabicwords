@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import { getWords, WordsResponse } from '../api/words';
 import { Input } from "../../components/Input";
-import { Label } from "../../components/Label";
 import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 
@@ -29,28 +28,30 @@ export default function WordsScreen() {
     }
   };
 
-  function handleOnLabelPress() {
-    if (!inputRef.current) return;
-    if (inputRef.current.isFocused()) {
-      inputRef.current?.blur();
-    } else {
-      inputRef.current?.focus();
+  const searchWords = async (query: string) => {
+    try {
+      const isArabic = /[\u0600-\u06FF]/.test(query);
+      const response = await getWords({
+        ...(isArabic ? { arabic: query } : { english: query })
+      });
+      setData(response);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
-  }
+  };
 
-  function onChangeText(text: string) {
+  async function onChangeText(text: string) {
+    setSearchQuery(text);
     if (searchError) {
       setSearchError(null);
     }
-    setSearchQuery(text);
-  }
-
-  if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    
+    if (text.length >= 2) {
+      await searchWords(text);
+    } else if (text.length === 0) {
+      await loadWords();
+    }
   }
 
   if (error) {
@@ -60,12 +61,6 @@ export default function WordsScreen() {
       </View>
     );
   }
-
-  const filteredWords = data?.data.filter(word => 
-    word.english_term.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (word.english_definition?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-    word.primary_arabic_script.includes(searchQuery)
-  );
 
   return (
     <KeyboardAvoidingView 
@@ -77,16 +72,22 @@ export default function WordsScreen() {
           className="flex-1 px-4 pb-24"
         >
           <Text className="text-xl font-bold m-10 text-center mt-20">Arabic Words</Text>
-          {filteredWords?.map((word) => (
-            <View key={word.id} className="bg-white p-4 rounded-lg shadow-sm mb-4">
-              <Text className="text-lg font-semibold">{word.english_term}</Text>
-              <Text className="text-xl my-2">{word.primary_arabic_script}</Text>
-              <Text>{word.english_definition}</Text>
-              <Text className="text-sm text-gray-500 mt-2">
-                {word.part_of_speech} • {word.general_frequency_tag}
-              </Text>
+          {loading ? (
+            <View className="flex-1 justify-center items-center">
+              <ActivityIndicator size="large" />
             </View>
-          ))}
+          ) : (
+            data?.data.map((word) => (
+              <View key={word.id} className="bg-white p-4 rounded-lg shadow-sm mb-4">
+                <Text className="text-lg font-semibold">{word.english_term}</Text>
+                <Text className="text-xl my-2">{word.primary_arabic_script}</Text>
+                <Text>{word.english_definition}</Text>
+                <Text className="text-sm text-gray-500 mt-2">
+                  {word.part_of_speech} • {word.general_frequency_tag}
+                </Text>
+              </View>
+            ))
+          )}
         </ScrollView>
         
         <View className="absolute mx-5 bottom-36 left-0 right-0 bg-gray-100 rounded-xl px-4 py-2 border-t border-gray-200 shadow-sm">
