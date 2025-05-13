@@ -31,6 +31,19 @@ export async function fetchWords(params: WordsQueryParams): Promise<WordsListRes
       sort_by = 'english_term'
     } = validatedParams.data;
 
+    // Return empty result if no search criteria provided
+    const hasSearchCriteria = english || arabic || part_of_speech || frequency;
+    if (!hasSearchCriteria) {
+      return {
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0
+        }
+      };
+    }
+
     // Build query
     let query = supabase
       .from('words')

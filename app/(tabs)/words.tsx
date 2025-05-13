@@ -1,9 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image } from 'react-native';
 import { getWords, WordsResponse } from '../api/words';
 import { Input } from "../../components/Input";
 import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
+
+const WordItem = ({ word }: { word: any }) => (
+  <View className="flex-row items-center py-3 border-b border-gray-200">
+    <View className="flex-1">
+      <Text className="text-2xl mb-1 font-arabic">{word.primary_arabic_script}</Text>
+      <View className="flex-row items-center">
+        <Text className="text-gray-600">({word.part_of_speech}) - </Text>
+        <Text className="text-gray-800">{word.english_term}</Text>
+        <View className="flex-row ml-2">
+          <Image 
+            source={{ uri: 'https://flagcdn.com/w20/lb.png' }} 
+            className="w-5 h-3 mx-0.5"
+          />
+          <Image 
+            source={{ uri: 'https://flagcdn.com/w20/sa.png' }} 
+            className="w-5 h-3 mx-0.5"
+          />
+          <Image 
+            source={{ uri: 'https://flagcdn.com/w20/eg.png' }} 
+            className="w-5 h-3 mx-0.5"
+          />
+        </View>
+      </View>
+    </View>
+  </View>
+);
 
 export default function WordsScreen() {
   const [data, setData] = useState<WordsResponse | null>(null);
@@ -68,29 +94,23 @@ export default function WordsScreen() {
       className="flex-1"
     >
       <View className="flex-1">
-        <ScrollView 
-          className="flex-1 px-4 pb-24"
-        >
-          <Text className="text-xl font-bold m-10 text-center mt-20">Arabic Words</Text>
-          {loading ? (
-            <View className="flex-1 justify-center items-center">
-              <ActivityIndicator size="large" />
-            </View>
-          ) : (
-            data?.data.map((word) => (
-              <View key={word.id} className="bg-white p-4 rounded-lg shadow-sm mb-4">
-                <Text className="text-lg font-semibold">{word.english_term}</Text>
-                <Text className="text-xl my-2">{word.primary_arabic_script}</Text>
-                <Text>{word.english_definition}</Text>
-                <Text className="text-sm text-gray-500 mt-2">
-                  {word.part_of_speech} • {word.general_frequency_tag}
-                </Text>
+        <View className="absolute bottom-0 left-0 right-0 bg-white">
+          <ScrollView 
+            className="max-h-96 px-4"
+            keyboardShouldPersistTaps="handled"
+          >
+            {loading ? (
+              <View className="py-8 justify-center items-center">
+                <ActivityIndicator size="large" />
               </View>
-            ))
-          )}
-        </ScrollView>
-        
-        <View className="absolute mx-5 bottom-36 left-0 right-0 bg-gray-100 rounded-xl px-4 py-2 border-t border-gray-200 shadow-sm">
+            ) : (
+              data?.data.map((word) => (
+                <WordItem key={word.id} word={word} />
+              ))
+            )}
+          </ScrollView>
+          
+          <View className="mt-5 mx-5 mb-36 bg-gray-100 rounded-xl px-4 py-2 border-t border-gray-200 shadow-sm">
             <Input
               ref={inputRef}
               placeholder="Enter an Arabic or English word"
@@ -101,6 +121,7 @@ export default function WordsScreen() {
               className="text-xl"
             />
             {searchError && <ErrorMessage msg={searchError} />}
+          </View>
         </View>
       </View>
     </KeyboardAvoidingView>
