@@ -1,35 +1,44 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image } from 'react-native';
-import { getWords, WordsResponse } from '../api/words';
+import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
+import { getWords } from '../api/words';
+import { WordDTO, WordsResponse } from '../types';
 import { Input } from "../../components/Input";
 import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 
-const WordItem = ({ word }: { word: any }) => (
-  <View className="flex-row items-center py-3 border-b border-gray-200">
-    <View className="flex-1">
-      <Text className="text-2xl mb-1 font-arabic">{word.primary_arabic_script}</Text>
-      <View className="flex-row items-center">
-        <Text className="text-gray-600">({word.part_of_speech}) - </Text>
-        <Text className="text-gray-800">{word.english_term}</Text>
-        <View className="flex-row ml-2">
-          <Image 
-            source={{ uri: 'https://flagcdn.com/w20/lb.png' }} 
-            className="w-5 h-3 mx-0.5"
-          />
-          <Image 
-            source={{ uri: 'https://flagcdn.com/w20/sa.png' }} 
-            className="w-5 h-3 mx-0.5"
-          />
-          <Image 
-            source={{ uri: 'https://flagcdn.com/w20/eg.png' }} 
-            className="w-5 h-3 mx-0.5"
-          />
+const WordItem = ({ word }: { word: WordDTO }) => {
+  const router = useRouter();
+  
+  return (
+    <Pressable 
+      onPress={() => router.push(`/word/${word.id}`)}
+      className="flex-row items-center py-3 border-b border-gray-200 active:bg-gray-50"
+    >
+      <View className="flex-1">
+        <Text className="text-2xl mb-1 font-arabic">{word.primary_arabic_script}</Text>
+        <View className="flex-row items-center">
+          <Text className="text-gray-600">({word.part_of_speech}) - </Text>
+          <Text className="text-gray-800">{word.english_term}</Text>
+          <View className="flex-row ml-2">
+            <Image 
+              source={{ uri: 'https://flagcdn.com/w20/lb.png' }} 
+              className="w-5 h-3 mx-0.5"
+            />
+            <Image 
+              source={{ uri: 'https://flagcdn.com/w20/sa.png' }} 
+              className="w-5 h-3 mx-0.5"
+            />
+            <Image 
+              source={{ uri: 'https://flagcdn.com/w20/eg.png' }} 
+              className="w-5 h-3 mx-0.5"
+            />
+          </View>
         </View>
       </View>
-    </View>
-  </View>
-);
+    </Pressable>
+  );
+};
 
 export default function WordsScreen() {
   const [data, setData] = useState<WordsResponse | null>(null);
@@ -104,7 +113,7 @@ export default function WordsScreen() {
                 <ActivityIndicator size="large" />
               </View>
             ) : (
-              data?.data.map((word) => (
+              data?.data.map((word: WordDTO) => (
                 <WordItem key={word.id} word={word} />
               ))
             )}

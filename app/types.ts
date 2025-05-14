@@ -111,7 +111,58 @@ export type WordsQueryParams = {
   page?: number;
   limit?: number;
   sort_by?: string;
-}; 
+};
+
+/*
+ * WordDefinition:
+ * Represents a single definition of a word
+ */
+export type WordDefinition = {
+  id: number;
+  definition: string;
+  example?: string;
+  usage_notes?: string;
+};
+
+/*
+ * WordDialect:
+ * Represents the dialect information for a word
+ */
+export type WordDialect = "Leb." | "For." | "Egy.";
+
+/*
+ * WordForm:
+ * Represents a form of the word with its conjugation and dialect
+ */
+export type WordForm = {
+  id: number;
+  arabic_script: string;
+  transliteration: string;
+  conjugation: string;
+  dialect: WordDialect;
+  audio_url?: string;
+};
+
+/*
+ * DetailedWordDTO:
+ * Extended DTO for detailed word information
+ */
+export type DetailedWordDTO = WordDTO & {
+  definitions: WordDefinition[];
+  forms: WordForm[];
+  frequency_tags: string[];
+  usage_regions: WordDialect[];
+  educational_notes?: string[];
+};
+
+/*
+ * WordsResponse:
+ * Represents the response for GET /api/words endpoint
+ */
+export type WordsResponse = {
+  data: WordDTO[];
+  pagination: PaginationDTO;
+};
 
 // Add a default export to prevent router from treating this as a route
 const Types = {};
