@@ -1,28 +1,82 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { supabase } from '../lib/supabase';
+import { loginUser, registerUser } from '../api/auth';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [isLoginView, setIsLoginView] = React.useState(true);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [user, setUser] = React.useState<{ email: string | undefined } | null>(null);
 
-  const handleLogin = () => {
-    // TODO: Implement login logic
-    setIsAuthenticated(true);
+  React.useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setIsAuthenticated(true);
+        setUser({ email: session.user.email! });
+      }
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+    }
   };
 
-  const handleRegister = () => {
-    // TODO: Implement registration logic
-    setIsAuthenticated(true);
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const result = await loginUser({ email, password });
+      setIsAuthenticated(true);
+      if (!result.user.email) throw new Error('No email returned from login');
+      setUser({ email: result.user.email });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An error occurred during login');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    setIsAuthenticated(false);
+  const handleRegister = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await registerUser({ email, password });
+      setIsAuthenticated(true);
+      setUser({ email: result.user.email });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An error occurred during registration');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      setUser(null);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      setError('Failed to logout');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isAuthenticated) {
@@ -31,17 +85,53 @@ export default function ProfileScreen() {
         <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>
           Welcome to Arabic Words
         </Text>
+        <View style={styles.formContainer}>
+          <TextInput
+            style={[styles.input, { 
+              color: Colors[colorScheme ?? 'light'].text,
+              borderColor: Colors[colorScheme ?? 'light'].tint 
+            }]}
+            placeholder="Email"
+            placeholderTextColor={Colors[colorScheme ?? 'light'].text}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={[styles.input, { 
+              color: Colors[colorScheme ?? 'light'].text,
+              borderColor: Colors[colorScheme ?? 'light'].tint 
+            }]}
+            placeholder="Password"
+            placeholderTextColor={Colors[colorScheme ?? 'light'].text}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          {error && (
+            <Text style={[styles.errorText, { color: 'red' }]}>
+              {error}
+            </Text>
+          )}
+        </View>
         <View style={styles.buttonContainer}>
           {isLoginView ? (
             <>
               <Pressable
                 style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-                onPress={handleLogin}>
-                <Text style={styles.buttonText}>Log In</Text>
+                onPress={handleLogin}
+                disabled={loading}>
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>Log In</Text>
+                )}
               </Pressable>
               <Pressable
                 style={[styles.switchButton, { borderColor: Colors[colorScheme ?? 'light'].tint }]}
-                onPress={() => setIsLoginView(false)}>
+                onPress={() => setIsLoginView(false)}
+                disabled={loading}>
                 <Text style={[styles.switchButtonText, { color: Colors[colorScheme ?? 'light'].tint }]}>
                   Don't have an account? Register
                 </Text>
@@ -51,12 +141,18 @@ export default function ProfileScreen() {
             <>
               <Pressable
                 style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-                onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
+                onPress={handleRegister}
+                disabled={loading}>
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>Register</Text>
+                )}
               </Pressable>
               <Pressable
                 style={[styles.switchButton, { borderColor: Colors[colorScheme ?? 'light'].tint }]}
-                onPress={() => setIsLoginView(true)}>
+                onPress={() => setIsLoginView(true)}
+                disabled={loading}>
                 <Text style={[styles.switchButtonText, { color: Colors[colorScheme ?? 'light'].tint }]}>
                   Already have an account? Log In
                 </Text>
@@ -75,14 +171,18 @@ export default function ProfileScreen() {
       </Text>
       <View style={styles.profileInfo}>
         <Text style={[styles.text, { color: Colors[colorScheme ?? 'light'].text }]}>
-          Email: user@example.com
+          Email: {user?.email}
         </Text>
-        {/* Add more profile information here */}
       </View>
       <Pressable
         style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-        onPress={handleLogout}>
-        <Text style={styles.buttonText}>Log Out</Text>
+        onPress={handleLogout}
+        disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text style={styles.buttonText}>Log Out</Text>
+        )}
       </Pressable>
     </View>
   );
@@ -103,6 +203,22 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 10,
+  },
+  formContainer: {
+    width: '100%',
+    gap: 10,
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    fontSize: 16,
+  },
+  errorText: {
+    fontSize: 14,
+    marginTop: 5,
   },
   buttonContainer: {
     width: '100%',
