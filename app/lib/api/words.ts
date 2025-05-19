@@ -47,7 +47,19 @@ export async function fetchWords(params: WordsQueryParams): Promise<WordsListRes
     // Build query
     let query = supabase
       .from('words')
-      .select('*, word_forms(*)', { count: 'exact' });
+      .select(`
+        *,
+        word_forms!inner (
+          *,
+          word_form_dialects!inner (
+            dialects!inner (
+              id,
+              name,
+              country_code
+            )
+          )
+        )
+      `, { count: 'exact' });
 
     // Apply filters
     if (english) {
@@ -76,8 +88,27 @@ export async function fetchWords(params: WordsQueryParams): Promise<WordsListRes
       throw new ApiError(500, `Failed to fetch words: ${error.message}`);
     }
 
+    // Transform the data to include dialects
+    const transformedData = data?.map(word => {
+      // Get unique dialects from all word forms
+      const dialects = Array.from(new Set(
+        word.word_forms.flatMap((form: any) => 
+          form.word_form_dialects?.map((wfd: any) => ({
+            id: wfd.dialects.id,
+            name: wfd.dialects.name,
+            country_code: wfd.dialects.country_code
+          })) || []
+        )
+      ));
+
+      return {
+        ...word,
+        dialects
+      };
+    }) || [];
+
     return {
-      data: data as WordDTO[],
+      data: transformedData as WordDTO[],
       pagination: {
         page,
         limit,
@@ -182,7 +213,16 @@ export async function fetchWordDetails(id: string): Promise<DetailedWordDTO> {
       frequency_tags: [data.general_frequency_tag],
       usage_regions,
       definitions,
-      educational_notes: []
+      educational_notes: [],
+      dialects: Array.from(new Set(
+        data.word_forms.flatMap((form: any) => 
+          form.word_form_dialects?.map((wfd: any) => ({
+            id: wfd.dialects.id,
+            name: wfd.dialects.name,
+            country_code: wfd.dialects.country_code
+          })) || []
+        )
+      ))
     };
 
     return detailedWord;

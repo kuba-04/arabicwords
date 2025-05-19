@@ -16,6 +16,16 @@ export type FrequencyTag = "VERY_FREQUENT" | "FREQUENT" | "COMMON" | "UNCOMMON" 
 export type WordFormDTO = Pick<WordFormEntity, "id" | "transliteration" | "conjugation_details" | "audio_url">;
 
 /*
+ * DialectDTO:
+ * Represents a dialect with its country code and name
+ */
+export type DialectDTO = {
+  id: string;
+  country_code: string;
+  name: string;
+};
+
+/*
  * WordDTO:
  * DTO for words returned by GET /api/words.
  * It includes necessary fields from the words table and a nested array of WordFormDTO.
@@ -25,6 +35,7 @@ export type WordDTO = Pick<
   "id" | "english_term" | "primary_arabic_script" | "part_of_speech" | "english_definition" | "general_frequency_tag"
 > & {
   word_forms: WordFormDTO[];
+  dialects: DialectDTO[];
 };
 
 /*
@@ -153,6 +164,7 @@ export type DetailedWordDTO = WordDTO & {
   frequency_tags: string[];
   usage_regions: WordDialect[];
   educational_notes?: string[];
+  dialects: DialectDTO[];
 };
 
 /*

@@ -12,6 +12,13 @@ const lbFlag = require('../../assets/images/flags/lb.png');
 const saFlag = require('../../assets/images/flags/sa.png');
 const egFlag = require('../../assets/images/flags/eg.png');
 
+// Flag mapping
+const FLAG_MAPPING = {
+  'lb': lbFlag,
+  'sa': saFlag,
+  'eg': egFlag,
+} as const;
+
 const WordItem = ({ word }: { word: WordDTO }) => {
   const router = useRouter();
   
@@ -26,18 +33,13 @@ const WordItem = ({ word }: { word: WordDTO }) => {
           <Text className="text-gray-600">({word.part_of_speech}) - </Text>
           <Text className="text-gray-800">{word.english_term}</Text>
           <View className="flex-row ml-2">
-            <Image 
-              source={lbFlag}
-              className="w-5 h-3 mx-0.5"
-            />
-            <Image 
-              source={saFlag}
-              className="w-5 h-3 mx-0.5"
-            />
-            <Image 
-              source={egFlag}
-              className="w-5 h-3 mx-0.5"
-            />
+            {word.dialects?.map((dialect) => (
+              <Image 
+                key={dialect.country_code}
+                source={FLAG_MAPPING[dialect.country_code as keyof typeof FLAG_MAPPING]}
+                className="w-5 h-3 mx-0.5"
+              />
+            ))}
           </View>
         </View>
       </View>
