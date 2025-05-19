@@ -183,6 +183,11 @@ export type WordsResponse = {
   pagination: PaginationDTO;
 };
 
+export type AuthError = {
+  code: string;
+  message: string;
+};
+
 // Add a default export to prevent router from treating this as a route
 const Types = {};
 export default Types;
