@@ -1,6 +1,6 @@
-import { AuthService } from '../../lib/services/auth.service';
-import type { RegisterUserCommand } from '../../types';
-import { validateAuthRequest } from '../../lib/middleware/validate-request';
+import { AuthService } from '../../services/auth.service';
+import type { LoginCommand } from '../../../types';
+import { validateAuthRequest } from '../../middleware/validate-request';
 
 export async function POST(request: Request) {
   try {
@@ -9,10 +9,10 @@ export async function POST(request: Request) {
     if (validatedData instanceof Response) return validatedData;
 
     const authService = new AuthService();
-    const result = await authService.register(validatedData as RegisterUserCommand);
+    const result = await authService.login(validatedData as LoginCommand);
 
     return new Response(JSON.stringify(result), {
-      status: 201,
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {
-        status: 400,
+        status: 401,
         headers: {
           'Content-Type': 'application/json',
         },
