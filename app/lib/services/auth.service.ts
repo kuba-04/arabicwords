@@ -1,5 +1,5 @@
-import { AuthError, LoginCommand, LoginResponseDTO, RegisterResponseDTO, RegisterUserCommand } from '../types';
-import { supabase } from './supabase';
+import { AuthError, LoginCommand, LoginResponseDTO, RegisterResponseDTO, RegisterUserCommand } from '../../types';
+import { supabase } from '../supabase';
 
 export class AuthService {
   private static validatePassword(password: string): void {

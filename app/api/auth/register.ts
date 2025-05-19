@@ -1,4 +1,4 @@
-import { AuthService } from '../../lib/auth.service';
+import { AuthService } from '../../lib/services/auth.service';
 import type { RegisterUserCommand } from '../../types';
 import { validateAuthRequest } from '../../lib/middleware/validate-request';
 
