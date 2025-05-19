@@ -1,12 +1,15 @@
 import { AuthService } from '../../lib/auth.service';
 import type { LoginCommand } from '../../types';
+import { validateAuthRequest } from '../../lib/middleware/validate-request';
 
 export async function POST(request: Request) {
   try {
-    const authService = new AuthService();
-    const command = await request.json() as LoginCommand;
+    // Validate request
+    const validatedData = await validateAuthRequest(request);
+    if (validatedData instanceof Response) return validatedData;
 
-    const result = await authService.login(command);
+    const authService = new AuthService();
+    const result = await authService.login(validatedData as LoginCommand);
 
     return new Response(JSON.stringify(result), {
       status: 200,
