@@ -67,48 +67,55 @@ export type TranslationResponseDTO = {
 };
 
 /*
- * CreateWordCommand:
- * Command Model for creating a new word (POST /api/words).
- * Derived from the words table by omitting auto-generated fields.
+ * AuthCommand:
+ * Base type for all authentication-related commands
  */
-export type CreateWordCommand = Omit<WordEntity, "id" | "created_at" | "updated_at">;
-
-/*
- * UpdateWordCommand:
- * Command Model for updating an existing word (PUT /api/words/{id}).
- * Uses the same structure as CreateWordCommand.
- */
-export type UpdateWordCommand = CreateWordCommand;
+export type AuthCommand = {
+  email: string;
+  password: string;
+};
 
 /*
  * RegisterUserCommand:
  * Command Model for registering a new user (POST /api/auth/register).
  */
-export type RegisterUserCommand = {
-  email: string;
-  password: string;
-};
+export type RegisterUserCommand = AuthCommand;
 
 /*
  * LoginCommand:
  * Command Model for user login (POST /api/auth/login).
  */
-export type LoginCommand = {
+export type LoginCommand = AuthCommand;
+
+/*
+ * UserDTO:
+ * DTO for user information returned in auth responses
+ */
+export type UserDTO = {
+  id: string;
   email: string;
-  password: string;
 };
 
 /*
- * LoginResponseDTO:
- * DTO for the login response, providing a JWT token and minimal user information.
+ * AuthResponseDTO:
+ * Base DTO for all authentication responses
  */
-export type LoginResponseDTO = {
+export type AuthResponseDTO = {
   token: string;
-  user: {
-    id: string;
-    email: string;
-  };
+  user: UserDTO;
 };
+
+/*
+ * RegisterResponseDTO:
+ * DTO for the registration response (POST /api/auth/register)
+ */
+export type RegisterResponseDTO = AuthResponseDTO;
+
+/*
+ * LoginResponseDTO:
+ * DTO for the login response (POST /api/auth/login)
+ */
+export type LoginResponseDTO = AuthResponseDTO;
 
 /*
  * WordsQueryParams:
@@ -174,6 +181,11 @@ export type DetailedWordDTO = WordDTO & {
 export type WordsResponse = {
   data: WordDTO[];
   pagination: PaginationDTO;
+};
+
+export type AuthError = {
+  code: string;
+  message: string;
 };
 
 // Add a default export to prevent router from treating this as a route
