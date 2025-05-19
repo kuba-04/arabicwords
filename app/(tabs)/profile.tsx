@@ -79,6 +79,70 @@ export default function ProfileScreen() {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 20,
+    },
+    text: {
+      fontSize: 16,
+      marginBottom: 10,
+    },
+    formContainer: {
+      width: '100%',
+      gap: 10,
+      marginBottom: 20,
+    },
+    input: {
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      borderWidth: 1,
+      fontSize: 16,
+    },
+    errorText: {
+      fontSize: 14,
+      marginTop: 5,
+    },
+    buttonContainer: {
+      width: '100%',
+      gap: 10,
+    },
+    button: {
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    switchButton: {
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      alignItems: 'center',
+      borderWidth: 1,
+    },
+    switchButtonText: {
+      fontSize: 14,
+      fontWeight: '500',
+    },
+    profileInfo: {
+      width: '100%',
+      marginBottom: 20,
+    },
+  });
+
   if (!isAuthenticated) {
     return (
       <View style={styles.container}>
@@ -186,68 +250,4 @@ export default function ProfileScreen() {
       </Pressable>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  formContainer: {
-    width: '100%',
-    gap: 10,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    fontSize: 16,
-  },
-  errorText: {
-    fontSize: 14,
-    marginTop: 5,
-  },
-  buttonContainer: {
-    width: '100%',
-    gap: 10,
-  },
-  button: {
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  switchButton: {
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  switchButtonText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  profileInfo: {
-    width: '100%',
-    marginBottom: 20,
-  },
-}); 
+} 
