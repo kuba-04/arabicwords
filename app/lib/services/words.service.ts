@@ -25,10 +25,10 @@ export class WordsService {
 
     // Apply filters
     if (english) {
-      query = query.ilike('english_term', `%${english}%`);
+      query = query.ilike('english_term', `${english}%`);
     }
     if (arabic) {
-      query = query.ilike('primary_arabic_script', `%${arabic}%`);
+      query = query.ilike('primary_arabic_script', `${arabic}%`);
     }
     if (part_of_speech) {
       query = query.eq('part_of_speech', part_of_speech);

@@ -16,6 +16,16 @@ export type FrequencyTag = "VERY_FREQUENT" | "FREQUENT" | "COMMON" | "UNCOMMON" 
 export type WordFormDTO = Pick<WordFormEntity, "id" | "transliteration" | "conjugation_details" | "audio_url">;
 
 /*
+ * DialectDTO:
+ * Represents a dialect with its country code and name
+ */
+export type DialectDTO = {
+  id: string;
+  country_code: string;
+  name: string;
+};
+
+/*
  * WordDTO:
  * DTO for words returned by GET /api/words.
  * It includes necessary fields from the words table and a nested array of WordFormDTO.
@@ -25,6 +35,7 @@ export type WordDTO = Pick<
   "id" | "english_term" | "primary_arabic_script" | "part_of_speech" | "english_definition" | "general_frequency_tag"
 > & {
   word_forms: WordFormDTO[];
+  dialects: DialectDTO[];
 };
 
 /*
@@ -111,7 +122,59 @@ export type WordsQueryParams = {
   page?: number;
   limit?: number;
   sort_by?: string;
-}; 
+};
+
+/*
+ * WordDefinition:
+ * Represents a single definition of a word
+ */
+export type WordDefinition = {
+  id: number;
+  definition: string;
+  example?: string;
+  usage_notes?: string;
+};
+
+/*
+ * WordDialect:
+ * Represents the dialect information for a word
+ */
+export type WordDialect = "Leb." | "For." | "Egy.";
+
+/*
+ * WordForm:
+ * Represents a form of the word with its conjugation and dialect
+ */
+export type WordForm = {
+  id: number;
+  arabic_script: string;
+  transliteration: string;
+  conjugation: string;
+  dialect: WordDialect;
+  audio_url?: string;
+};
+
+/*
+ * DetailedWordDTO:
+ * Extended DTO for detailed word information
+ */
+export type DetailedWordDTO = WordDTO & {
+  definitions: WordDefinition[];
+  forms: WordForm[];
+  frequency_tags: string[];
+  usage_regions: WordDialect[];
+  educational_notes?: string[];
+  dialects: DialectDTO[];
+};
+
+/*
+ * WordsResponse:
+ * Represents the response for GET /api/words endpoint
+ */
+export type WordsResponse = {
+  data: WordDTO[];
+  pagination: PaginationDTO;
+};
 
 // Add a default export to prevent router from treating this as a route
 const Types = {};
