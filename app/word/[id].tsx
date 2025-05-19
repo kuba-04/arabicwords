@@ -5,6 +5,30 @@ import { Text } from '../../components/Text';
 import { DetailedWordDTO, WordForm, WordDialect, WordDefinition } from '../types';
 import { getWordDetails } from '../api/words';
 
+// Import local flag images
+const lbFlag = require('../../assets/images/flags/lb.png');
+const saFlag = require('../../assets/images/flags/sa.png');
+const egFlag = require('../../assets/images/flags/eg.png');
+
+// Flag mapping for dialects
+const FLAG_MAPPING = {
+  'lb': lbFlag,
+  'sa': saFlag,
+  'eg': egFlag,
+} as const;
+
+const DIALECT_TO_COUNTRY_CODE: Record<WordDialect, keyof typeof FLAG_MAPPING> = {
+  'lb': 'lb',
+  'sa': 'sa',
+  'eg': 'eg',
+};
+
+const DIALECT_NAME_TO_CODE: Record<string, WordDialect> = {
+  "Lebanese Arabic": "lb",
+  "Formal Arabic": "sa",
+  "Egyptian Arabic": "eg"
+};
+
 const FrequencyTag = ({ tag }: { tag: string }) => (
   <View className="bg-gray-100 rounded-md px-2 py-1 mr-2">
     <Text className="text-sm text-gray-600">{tag}</Text>
@@ -12,16 +36,10 @@ const FrequencyTag = ({ tag }: { tag: string }) => (
 );
 
 const DialectFlag = ({ dialect }: { dialect: WordDialect }) => {
-  const flagMap: Record<WordDialect, string> = {
-    'Leb.': 'lb',
-    'For.': 'sa',
-    'Egy.': 'eg'
-  };
-  const countryCode = flagMap[dialect];
-  
+  const countryCode = DIALECT_TO_COUNTRY_CODE[dialect];
   return (
-    <Image 
-      source={{ uri: `https://flagcdn.com/w20/${countryCode}.png` }} 
+    <Image
+      source={FLAG_MAPPING[countryCode]}
       className="w-5 h-3 mx-0.5"
     />
   );
@@ -35,7 +53,9 @@ const WordFormRow = ({ form }: { form: WordForm }) => (
     </View>
     <View className="flex-row items-center">
       <Text className="text-gray-600 mr-2">{form.conjugation}</Text>
-      <Text className="text-gray-600 mr-2">{form.dialect}</Text>
+      {/* Show dialect flag and label */}
+      <DialectFlag dialect={form.dialect} />
+      <Text className="text-gray-600 ml-1 mr-2">{form.dialect}</Text>
       {/* Audio button placeholder for future implementation */}
       <View className="w-8 h-8 bg-gray-200 rounded-full" />
     </View>

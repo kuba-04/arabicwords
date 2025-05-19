@@ -169,8 +169,8 @@ export async function fetchWordDetails(id: string): Promise<DetailedWordDTO> {
 
       // Map to the first dialect or default to Lebanese
       const primaryDialect = dialects.length > 0 ? 
-        dialects[0].name as WordDialect : 
-        'Leb.';
+        dialects[0].code as WordDialect : 
+        'lb';
 
       return {
         id: form.id,
@@ -182,17 +182,31 @@ export async function fetchWordDetails(id: string): Promise<DetailedWordDTO> {
       };
     });
 
-    // Get unique dialects from all forms
+    // Get unique dialects from all forms (for usage_regions)
     const uniqueDialects = Array.from(new Set(
       data.word_forms.flatMap((form: any) => 
-        form.word_form_dialects?.map((wfd: any) => wfd.dialects.name as WordDialect) || []
+        form.word_form_dialects?.map((wfd: any) => wfd.dialects.country_code as WordDialect) || []
       )
     ));
+
+    // Collect dialects as objects (for flag rendering)
+    const dialects = Array.from(new Set(
+      data.word_forms.flatMap((form: any) => 
+        form.word_form_dialects?.map((wfd: any) =>
+          JSON.stringify({
+            id: wfd.dialects.id,
+            name: wfd.dialects.name,
+            country_code: wfd.dialects.country_code
+          })
+        ) || []
+      )
+    ))
+    .map((str: string) => JSON.parse(str));
 
     // Use default dialects if none found
     const usage_regions = uniqueDialects.length > 0 ? 
       uniqueDialects : 
-      ['Leb.', 'For.', 'Egy.'];
+      ['lb', 'sa', 'eg'];
 
     // Create a single definition from the english_definition field
     const definitions: WordDefinition[] = [{
@@ -214,15 +228,7 @@ export async function fetchWordDetails(id: string): Promise<DetailedWordDTO> {
       usage_regions,
       definitions,
       educational_notes: [],
-      dialects: Array.from(new Set(
-        data.word_forms.flatMap((form: any) => 
-          form.word_form_dialects?.map((wfd: any) => ({
-            id: wfd.dialects.id,
-            name: wfd.dialects.name,
-            country_code: wfd.dialects.country_code
-          })) || []
-        )
-      ))
+      dialects
     };
 
     return detailedWord;

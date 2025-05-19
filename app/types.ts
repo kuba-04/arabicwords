@@ -144,9 +144,9 @@ export type WordDefinition = {
 
 /*
  * WordDialect:
- * Represents the dialect information for a word
+ * Represents the dialect information for a word using country codes
  */
-export type WordDialect = "Leb." | "For." | "Egy.";
+export type WordDialect = "lb" | "sa" | "eg";
 
 /*
  * WordForm:
