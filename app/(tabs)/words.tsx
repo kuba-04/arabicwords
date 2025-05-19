@@ -7,6 +7,11 @@ import { Input } from "../../components/Input";
 import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 
+// Import flag images
+const lbFlag = require('../../assets/images/flags/lb.png');
+const saFlag = require('../../assets/images/flags/sa.png');
+const egFlag = require('../../assets/images/flags/eg.png');
+
 const WordItem = ({ word }: { word: WordDTO }) => {
   const router = useRouter();
   
@@ -22,15 +27,15 @@ const WordItem = ({ word }: { word: WordDTO }) => {
           <Text className="text-gray-800">{word.english_term}</Text>
           <View className="flex-row ml-2">
             <Image 
-              source={{ uri: 'https://flagcdn.com/w20/lb.png' }} 
+              source={lbFlag}
               className="w-5 h-3 mx-0.5"
             />
             <Image 
-              source={{ uri: 'https://flagcdn.com/w20/sa.png' }} 
+              source={saFlag}
               className="w-5 h-3 mx-0.5"
             />
             <Image 
-              source={{ uri: 'https://flagcdn.com/w20/eg.png' }} 
+              source={egFlag}
               className="w-5 h-3 mx-0.5"
             />
           </View>
