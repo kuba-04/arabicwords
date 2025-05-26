@@ -27,11 +27,13 @@ export class AuthService {
     }
   }
 
-  async register(command: RegisterUserCommand): Promise<RegisterResponseDTO> {
+  public static async register(command: RegisterUserCommand): Promise<RegisterResponseDTO> {
     try {
       // Validate input
       AuthService.validateEmail(command.email);
       AuthService.validatePassword(command.password);
+
+      console.log('command', command);
 
       // Register with Supabase
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -60,7 +62,7 @@ export class AuthService {
     }
   }
 
-  async login(command: LoginCommand): Promise<LoginResponseDTO> {
+  public static async login(command: LoginCommand): Promise<LoginResponseDTO> {
     try {
       // Validate input
       AuthService.validateEmail(command.email);
@@ -92,7 +94,7 @@ export class AuthService {
     }
   }
 
-  private handleError(error: unknown): AuthError {
+  private static handleError(error: unknown): AuthError {
     if (error instanceof Error) {
       return {
         code: 'AUTH_ERROR',
@@ -104,6 +106,6 @@ export class AuthService {
       message: 'An unexpected error occurred',
     };
   }
-} 
+}
 
 export default new AuthService();

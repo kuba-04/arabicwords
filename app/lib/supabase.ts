@@ -1,10 +1,23 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../db/database.types';
+import 'react-native-url-polyfill/auto'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { createClient } from '@supabase/supabase-js'
+import Constants from 'expo-constants'
 
-// Create a single instance of the Supabase client
-export const supabase = createClient<Database>(
-  process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_KEY!
-);
+// Get Supabase URL and key from environment variables
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
 
-export default supabase; 
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase URL or Key in environment variables')
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    storage: AsyncStorage,
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+  },
+})
+
+export default supabase;

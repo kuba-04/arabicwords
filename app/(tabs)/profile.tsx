@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { supabase } from '../lib/supabase';
-import { loginUser, registerUser } from '../api/auth';
+import { AuthService } from '../lib/services/auth.service';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
@@ -38,7 +38,7 @@ export default function ProfileScreen() {
       setLoading(true);
       setError(null);
       
-      const result = await loginUser({ email, password });
+      const result = await AuthService.login({ email, password });
       setIsAuthenticated(true);
       if (!result.user.email) throw new Error('No email returned from login');
       setUser({ email: result.user.email });
@@ -54,7 +54,7 @@ export default function ProfileScreen() {
       setLoading(true);
       setError(null);
 
-      const result = await registerUser({ email, password });
+      const result = await AuthService.register({ email, password });
       setIsAuthenticated(true);
       setUser({ email: result.user.email });
     } catch (error) {
