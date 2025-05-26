@@ -33,8 +33,6 @@ export class AuthService {
       AuthService.validateEmail(command.email);
       AuthService.validatePassword(command.password);
 
-      console.log('command', command);
-
       // Register with Supabase
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: command.email,
@@ -42,11 +40,18 @@ export class AuthService {
       });
 
       if (signUpError) {
+        console.error('Signup error:', signUpError);
         throw signUpError;
       }
 
-      if (!authData.user || !authData.session) {
-        throw new Error('Registration failed');
+      if (!authData.user) {
+        console.error('Registration failed - no user created');
+        throw new Error('Registration failed - no user created');
+      }
+
+      if (!authData.session) {
+        console.error('Registration failed - no session created');
+        throw new Error('Registration failed - no session created');
       }
 
       // Return response
@@ -58,6 +63,7 @@ export class AuthService {
         },
       };
     } catch (error) {
+      console.error('Registration process error:', error);
       throw this.handleError(error);
     }
   }
