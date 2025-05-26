@@ -5,4 +5,4 @@ if (typeof global.Buffer === 'undefined') {
   global.Buffer = require('buffer/').Buffer;
 }
 
-// Add any other polyfills that might be needed for the app 
+export default { Buffer };

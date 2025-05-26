@@ -27,7 +27,7 @@ export class AuthService {
     }
   }
 
-  async register(command: RegisterUserCommand): Promise<RegisterResponseDTO> {
+  public static async register(command: RegisterUserCommand): Promise<RegisterResponseDTO> {
     try {
       // Validate input
       AuthService.validateEmail(command.email);
@@ -40,11 +40,18 @@ export class AuthService {
       });
 
       if (signUpError) {
+        console.error('Signup error:', signUpError);
         throw signUpError;
       }
 
-      if (!authData.user || !authData.session) {
-        throw new Error('Registration failed');
+      if (!authData.user) {
+        console.error('Registration failed - no user created');
+        throw new Error('Registration failed - no user created');
+      }
+
+      if (!authData.session) {
+        console.error('Registration failed - no session created');
+        throw new Error('Registration failed - no session created');
       }
 
       // Return response
@@ -56,11 +63,12 @@ export class AuthService {
         },
       };
     } catch (error) {
+      console.error('Registration process error:', error);
       throw this.handleError(error);
     }
   }
 
-  async login(command: LoginCommand): Promise<LoginResponseDTO> {
+  public static async login(command: LoginCommand): Promise<LoginResponseDTO> {
     try {
       // Validate input
       AuthService.validateEmail(command.email);
@@ -92,7 +100,7 @@ export class AuthService {
     }
   }
 
-  private handleError(error: unknown): AuthError {
+  private static handleError(error: unknown): AuthError {
     if (error instanceof Error) {
       return {
         code: 'AUTH_ERROR',
@@ -104,6 +112,6 @@ export class AuthService {
       message: 'An unexpected error occurred',
     };
   }
-} 
+}
 
 export default new AuthService();

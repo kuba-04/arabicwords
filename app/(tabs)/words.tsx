@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { getWords } from '../api/words';
 import { WordDTO, WordsResponse } from '../types';
 import { Input } from "../../components/Input";
 import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
+import { AuthService } from '../lib/services/auth.service';
+import { WordsService } from '../lib/services/words.service';
 
 // Import flag images
 const lbFlag = require('../../assets/images/flags/lb.png');
@@ -61,7 +62,7 @@ export default function WordsScreen() {
 
   const loadWords = async () => {
     try {
-      const response = await getWords({});
+      const response = await WordsService.getWords({});
       setData(response);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -73,7 +74,7 @@ export default function WordsScreen() {
   const searchWords = async (query: string) => {
     try {
       const isArabic = /[\u0600-\u06FF]/.test(query);
-      const response = await getWords({
+      const response = await WordsService.getWords({
         ...(isArabic ? { arabic: query } : { english: query })
       });
       setData(response);

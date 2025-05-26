@@ -32,4 +32,4 @@ export function validateRequest(schema: z.ZodType<AuthCommand>) {
   };
 }
 
-export const validateAuthRequest = validateRequest(authCommandSchema); 
+export default validateRequest(authCommandSchema); 

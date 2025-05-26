@@ -1,3 +1,4 @@
+import 'react-native-reanimated';
 import { Redirect } from 'expo-router';
 import "../global.css";
 

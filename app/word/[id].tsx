@@ -3,7 +3,7 @@ import { View, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { Text } from '../../components/Text';
 import { DetailedWordDTO, WordForm, WordDialect, WordDefinition } from '../types';
-import { getWordDetails } from '../api/words';
+import { WordsService } from '../lib/services/words.service';
 
 // Import local flag images
 const lbFlag = require('../../assets/images/flags/lb.png');
@@ -74,7 +74,7 @@ export default function WordDetailsScreen() {
 
   const loadWordDetails = async () => {
     try {
-      const details = await getWordDetails(id as string);
+      const details = await WordsService.getWordDetails(id as string);
       setWord(details);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load word details');
