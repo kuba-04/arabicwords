@@ -112,6 +112,38 @@ export class AuthService {
       message: 'An unexpected error occurred',
     };
   }
+
+  public static async deleteAccount(): Promise<void> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('No authenticated user found');
+      }
+
+      // Step 1: Delete user profile and related data
+      const { error: profileDeletionError } = await supabase
+        .from('user_profiles')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (profileDeletionError) {
+        throw profileDeletionError;
+      }
+
+      // Step 2: Delete auth user record
+      const { error: userDeletionError } = await supabase.auth.admin.deleteUser(user.id);
+
+      if (userDeletionError) {
+        throw userDeletionError;
+      }
+
+      // Sign out the user after successful deletion
+      await supabase.auth.signOut();
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
 }
 
 export default new AuthService();

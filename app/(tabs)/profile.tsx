@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -79,6 +79,39 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              setError(null);
+              await AuthService.deleteAccount();
+              setIsAuthenticated(false);
+              setUser(null);
+              setEmail('');
+              setPassword('');
+            } catch (error) {
+              setError(error instanceof Error ? error.message : 'Failed to delete account');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -140,6 +173,21 @@ export default function ProfileScreen() {
     profileInfo: {
       width: '100%',
       marginBottom: 20,
+    },
+    deleteButton: {
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      alignItems: 'center',
+      backgroundColor: '#fecaca', // red-200 color
+      marginTop: 10,
+      borderWidth: 1,
+      borderColor: '#dc2626', // red-600 color for border
+    },
+    deleteButtonText: {
+      color: '#dc2626', // red-600 color for text
+      fontSize: 16,
+      fontWeight: '600',
     },
   });
 
@@ -238,16 +286,33 @@ export default function ProfileScreen() {
           Email: {user?.email}
         </Text>
       </View>
-      <Pressable
-        style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
-        onPress={handleLogout}
-        disabled={loading}>
-        {loading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text style={styles.buttonText}>Log Out</Text>
-        )}
-      </Pressable>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+          onPress={handleLogout}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>Log Out</Text>
+          )}
+        </Pressable>
+        <Pressable
+          style={styles.deleteButton}
+          onPress={handleDeleteAccount}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color="#dc2626" />
+          ) : (
+            <Text style={styles.deleteButtonText}>Delete Account</Text>
+          )}
+        </Pressable>
+      </View>
+      {error && (
+        <Text style={[styles.errorText, { color: 'red' }]}>
+          {error}
+        </Text>
+      )}
     </View>
   );
 } 
