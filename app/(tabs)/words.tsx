@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image, Pressable } from 'react-native';
+import { View, Platform, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Image, Pressable, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { WordDTO, WordsResponse } from '../types';
 import { Input } from "../../components/Input";
 import { Text } from "../../components/Text";
-import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
+import Animated, { FadeInDown, FadeOut, useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
 import { AuthService } from '../lib/services/auth.service';
 import { WordsService } from '../lib/services/words.service';
 
@@ -55,6 +55,30 @@ export default function WordsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef<TextInput>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const translateY = useSharedValue(0);
+
+  useEffect(() => {
+    const keyboardWillShow = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => {
+        // Move content up by 150 units when keyboard shows
+        translateY.value = withTiming(-150, { duration: 300 });
+      }
+    );
+
+    const keyboardWillHide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        // Reset position when keyboard hides
+        translateY.value = withTiming(0, { duration: 300 });
+      }
+    );
+
+    return () => {
+      keyboardWillShow.remove();
+      keyboardWillHide.remove();
+    };
+  }, []);
 
   useEffect(() => {
     loadWords();
@@ -97,6 +121,12 @@ export default function WordsScreen() {
     }
   }
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
+
   if (error) {
     return (
       <View className="flex-1 justify-center items-center p-4">
@@ -111,7 +141,9 @@ export default function WordsScreen() {
       className="flex-1"
     >
       <View className="flex-1">
-        <View className="absolute bottom-0 left-0 right-0 bg-white">
+        <Animated.View 
+          style={[{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'white' }, animatedStyle]}
+        >
           <ScrollView 
             className="max-h-96 px-4"
             keyboardShouldPersistTaps="handled"
@@ -139,7 +171,7 @@ export default function WordsScreen() {
             />
             {searchError && <ErrorMessage msg={searchError} />}
           </View>
-        </View>
+        </Animated.View>
       </View>
     </KeyboardAvoidingView>
   );
