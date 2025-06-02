@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, ActivityIndicator, Image } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { View, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
+import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Text } from '../../components/Text';
 import { DetailedWordDTO, WordForm, WordDialect, WordDefinition } from '../types';
 import { WordsService } from '../lib/services/words.service';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Import local flag images
 const lbFlag = require('../../assets/images/flags/lb.png');
@@ -67,6 +70,8 @@ export default function WordDetailsScreen() {
   const [word, setWord] = useState<DetailedWordDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const theme = useColorScheme() ?? 'light';
+
 
   useEffect(() => {
     loadWordDetails();
@@ -102,62 +107,77 @@ export default function WordDetailsScreen() {
           <Text className="text-red-500">{error || 'Word not found'}</Text>
         </View>
       ) : (
-        <ScrollView className="flex-1 bg-white p-4">
-          {/* Header */}
-          <View className="mb-6">
-            <Text className="text-3xl font-arabic mb-2">{word.primary_arabic_script}</Text>
-            <View className="flex-row items-center mb-2">
-              <Text className="text-gray-600">({word.part_of_speech}) - </Text>
-              <Text className="text-gray-800">{word.english_term}</Text>
-            </View>
-            <View className="flex-row flex-wrap">
-              {word.frequency_tags.map((tag: string, index: number) => (
-                <FrequencyTag key={index} tag={tag} />
-              ))}
-            </View>
-            <View className="flex-row mt-2">
-              {word.usage_regions.map((region: WordDialect, index: number) => (
-                <DialectFlag key={index} dialect={region} />
-              ))}
-            </View>
-          </View>
-
-          {/* Definitions */}
-          <View className="mb-6">
-            <Text className="text-xl font-semibold mb-3">Definitions</Text>
-            {word.definitions.map((def: WordDefinition, index: number) => (
-              <View key={index} className="mb-4">
-                <Text className="text-lg mb-1">{index + 1}. {def.definition}</Text>
-                {def.example && (
-                  <Text className="text-gray-600 ml-4">e.g., {def.example}</Text>
-                )}
-                {def.usage_notes && (
-                  <Text className="text-gray-500 ml-4 mt-1">{def.usage_notes}</Text>
-                )}
+        <View className="flex-1">
+          <ScrollView className="flex-1 bg-white p-4">
+            {/* Header */}
+            <View className="mb-6">
+              <Text className="text-3xl font-arabic mb-2">{word.primary_arabic_script}</Text>
+              <View className="flex-row items-center mb-2">
+                <Text className="text-gray-600">({word.part_of_speech}) - </Text>
+                <Text className="text-gray-800">{word.english_term}</Text>
               </View>
-            ))}
-          </View>
+              <View className="flex-row flex-wrap">
+                {word.frequency_tags.map((tag: string, index: number) => (
+                  <FrequencyTag key={index} tag={tag} />
+                ))}
+              </View>
+              <View className="flex-row mt-2">
+                {word.usage_regions.map((region: WordDialect, index: number) => (
+                  <DialectFlag key={index} dialect={region} />
+                ))}
+              </View>
+            </View>
 
-          {/* Forms */}
-          <View>
-            <Text className="text-xl font-semibold mb-3">Forms</Text>
-            <View className="bg-gray-50 rounded-lg p-4">
-              {word.forms.map((form: WordForm, index: number) => (
-                <WordFormRow key={index} form={form} />
+            {/* Definitions */}
+            <View className="mb-6">
+              <Text className="text-xl font-semibold mb-3">Definitions</Text>
+              {word.definitions.map((def: WordDefinition, index: number) => (
+                <View key={index} className="mb-4">
+                  <Text className="text-lg mb-1">{index + 1}. {def.definition}</Text>
+                  {def.example && (
+                    <Text className="text-gray-600 ml-4">e.g., {def.example}</Text>
+                  )}
+                  {def.usage_notes && (
+                    <Text className="text-gray-500 ml-4 mt-1">{def.usage_notes}</Text>
+                  )}
+                </View>
               ))}
             </View>
-          </View>
 
-          {/* Educational Notes */}
-          {word.educational_notes && word.educational_notes.length > 0 && (
-            <View className="mt-6">
-              <Text className="text-xl font-semibold mb-3">Notes</Text>
-              {word.educational_notes.map((note: string, index: number) => (
-                <Text key={index} className="text-gray-600 mb-2">• {note}</Text>
-              ))}
+            {/* Forms */}
+            <View>
+              <Text className="text-xl font-semibold mb-3">Forms</Text>
+              <View className="bg-gray-50 rounded-lg p-4">
+                {word.forms.map((form: WordForm, index: number) => (
+                  <WordFormRow key={index} form={form} />
+                ))}
+              </View>
             </View>
-          )}
-        </ScrollView>
+
+            {/* Educational Notes */}
+            {word.educational_notes && word.educational_notes.length > 0 && (
+              <View className="mt-6">
+                <Text className="text-xl font-semibold mb-3">Notes</Text>
+                {word.educational_notes.map((note: string, index: number) => (
+                  <Text key={index} className="text-gray-600 mb-2">• {note}</Text>
+                ))}
+              </View>
+            )}
+          </ScrollView>
+          
+          <Pressable
+            onPress={() => router.back()}
+            className="absolute bottom-6 right-2 bg-gray-800 px-6 py-3 rounded-full shadow-lg"
+          ><Text className="text-white">
+            <IconSymbol
+              name="chevron.left"
+              size={18}
+              weight="medium"
+              color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+            />
+          </Text>
+          </Pressable>
+        </View>
       )}
     </>
   );
