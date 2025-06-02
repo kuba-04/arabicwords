@@ -7,6 +7,7 @@ import { Text } from "../../components/Text";
 import Animated, { FadeInDown, FadeOut, useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
 import { AuthService } from '../lib/services/auth.service';
 import { WordsService } from '../lib/services/words.service';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // Import flag images
 const lbFlag = require('../../assets/images/flags/lb.png');
@@ -127,6 +128,15 @@ export default function WordsScreen() {
     };
   });
 
+  const resetSearch = async () => {
+    setSearchQuery('');
+    await loadWords();
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+    Keyboard.dismiss();
+  };
+
   if (error) {
     return (
       <View className="flex-1 justify-center items-center p-4">
@@ -160,15 +170,25 @@ export default function WordsScreen() {
           </ScrollView>
           
           <View className="mt-5 mx-5 mb-36 bg-gray-100 rounded-xl px-4 py-2 shadow-sm">
-            <Input
-              ref={inputRef}
-              placeholder="Enter an Arabic or English word"
-              value={searchQuery}
-              onChangeText={onChangeText}
-              aria-labelledby="searchLabel"
-              aria-errormessage="searchError"
-              className="text-xl"
-            />
+            <View className="flex-row items-center">
+              <Input
+                ref={inputRef}
+                placeholder="Enter an Arabic or English word"
+                value={searchQuery}
+                onChangeText={onChangeText}
+                aria-labelledby="searchLabel"
+                aria-errormessage="searchError"
+                className="text-xl flex-1"
+              />
+              {searchQuery.length > 0 && (
+                <Pressable 
+                  onPress={resetSearch}
+                  className="ml-2 p-2 rounded-full active:bg-gray-200"
+                >
+                  <MaterialIcons name="close" size={24} color="#666" />
+                </Pressable>
+              )}
+            </View>
             {searchError && <ErrorMessage msg={searchError} />}
           </View>
         </Animated.View>
