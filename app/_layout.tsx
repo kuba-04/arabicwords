@@ -22,7 +22,9 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      {/* TODO: Add dark theme */}
+      {/* <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> */}
+      <ThemeProvider value={DefaultTheme}>
         <View style={{ alignItems: 'center', marginTop: 60, backgroundColor: '#383b43', padding: 12 }}>
           <Image
             source={require('../assets/images/logo.png')}
