@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Delete Your Account - Arabic Words</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .steps {
+            list-style-type: none;
+            padding: 0;
+            counter-reset: step-counter;
+        }
+        
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        .steps li::before {
+            content: counter(step-counter);
+            background-color: #007AFF;
+            color: white;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+        }
+        
+        .screenshot {
+            max-width: 70%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .screenshots-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .platform-label {
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        @media (max-width: 640px) {
+            .screenshots-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .screenshot {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007AFF;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html">
+            <img src="logo.png" alt="Arabic Words Logo" class="logo">
+        </a>
+        <h1>How to Delete Your Account</h1>
+    </div>
+
+    <div class="instructions">
+        <ol class="steps">
+            <li>In the app go to your profile tab</li>
+            <li>Look for and tap the "Delete Account" option</li>
+            <li>Confirm your decision to delete the account</li>
+        </ol>
+
+        <div class="screenshots-container">
+            <div>
+                <div class="platform-label">Android</div>
+                <img src="delete_account_android.png" alt="Account deletion steps on Android" class="screenshot">
+            </div>
+            <div>
+                <div class="platform-label">iOS</div>
+                <img src="delete_account_ios.png" alt="Account deletion steps on iOS" class="screenshot">
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Important:</strong> Once your account is deleted, it cannot be recovered. We permanently delete all your information and activity data from our servers.
+        </div>
+    </div>
+
+    <a href="index.html" class="back-link">← Back to Home</a>
+</body>
+</html> 
